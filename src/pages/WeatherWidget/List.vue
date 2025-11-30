@@ -3,6 +3,7 @@
 import { ref, onMounted, watch } from 'vue'
 // components
 import { WeatherCard, SettingsModal, LocationPermission } from './components'
+import { BaseIcon } from '@/components/UI'
 // services
 import { getWeatherByCity, getWeatherByCoords, getCurrentLocation } from '@/modules/WeatherWidget/services'
 import { saveConfig, loadConfig } from '@/services/storage.service'    
@@ -60,14 +61,12 @@ async function requestLocation() {
   } catch (err) {    
     const errorMessage = err instanceof Error ? err.message : String(err)
     
-    if (errorMessage.includes('denied') || errorMessage.includes('Permission')) {
+    if (errorMessage.includes('denied')) {
       // Show blocked state in LocationPermission
       locationBlocked.value = true
       showLocationPrompt.value = true
     } else if (errorMessage.includes('unavailable')) {
       error.value = 'Location unavailable. Please add cities manually.'
-    } else if (errorMessage.includes('timeout')) {
-      error.value = 'Location request timed out. Please try again.'
     } else {
       error.value = 'Failed to get your location. Please add cities manually.'
     }

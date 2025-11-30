@@ -20,59 +20,59 @@ const emit = defineEmits<{
 }>()
 
 // reacives
-const localCities = ref<Types.IEntity.City[]>([...props.cities])
-const searchQuery = ref('')
-const searchResults = ref<Types.IEntity.City[]>([])
-const searching = ref(false)
+const cityList = ref<Types.IEntity.City[]>([...props.cities])
+const searchValue = ref('')
+const searchResultCityList = ref<Types.IEntity.City[]>([])
+const searchingLoading = ref(false)
 const dragIndex = ref<number | null>(null)
 
 // Watch props
 watch(() => props.cities, (newCities) => {
-  localCities.value = [...newCities]
+  cityList.value = [...newCities]
 }, { deep: true })
 
 
 // methods
 const handleSearch = useDebounceFn(async () => {
-  if (!searchQuery.value.trim()) {
-    searchResults.value = []
+  if (!searchValue.value.trim()) {
+    searchResultCityList.value = []
     return
   }
   
-  searching.value = true
+  searchingLoading.value = true
   try {
-    searchResults.value = await searchCity(searchQuery.value)
+    searchResultCityList.value = await searchCity(searchValue.value)
   } catch (err) {
-    searchResults.value = []
+    searchResultCityList.value = []
   } finally {
-    searching.value = false
+    searchingLoading.value = false
   }
 }, 500)
 
 
 function addCity(city: Types.IEntity.City) {
   // Check if already exists
-  if (localCities.value.some(c => c.id === city.id)) {
+  if (cityList.value.some(c => c.id === city.id)) {
     return
   }
   
-  localCities.value.push(city)
-  emit('update:cities', localCities.value)
+  cityList.value.push(city)
+  emit('update:cities', cityList.value)
   
   // Clear search
-  searchQuery.value = ''
-  searchResults.value = []
+  searchValue.value = ''
+  searchResultCityList.value = []
 }
 
 function handleAddFirst() {
-  if (searchResults.value.length > 0) {
-    addCity(searchResults.value[0])
+  if (searchResultCityList.value.length > 0) {
+    addCity(searchResultCityList.value[0])
   }
 }
 
 function removeCity(index: number) {
-  localCities.value.splice(index, 1)
-  emit('update:cities', localCities.value)
+  cityList.value.splice(index, 1)
+  emit('update:cities', cityList.value)
 }
 
 // Drag & Drop
@@ -86,7 +86,7 @@ function handleDragStart(index: number, event: DragEvent) {
 function handleDragOver(index: number) {
   if (dragIndex.value === null || dragIndex.value === index) return
   
-  const items = [...localCities.value]
+  const items = [...cityList.value]
   const draggedItem = items[dragIndex.value]
   
   // Remove from old position
@@ -95,12 +95,12 @@ function handleDragOver(index: number) {
   // Insert at new position
   items.splice(index, 0, draggedItem)
   
-  localCities.value = items
+  cityList.value = items
   dragIndex.value = index
 }
 
-function handleDrop(_index: number) {
-  emit('update:cities', localCities.value)
+function handleDrop() {
+  emit('update:cities', cityList.value)
 }
 
 function handleDragEnd() {
@@ -119,14 +119,14 @@ function handleDragEnd() {
     <!-- Cities List -->
     <div class="cities-list">
       <div
-        v-for="(city, index) in localCities"
+        v-for="(city, index) in cityList"
         :key="city.id"
         class="city-item"
         :class="{ dragging: dragIndex === index }"
         draggable="true"
         @dragstart="handleDragStart(index, $event)"
         @dragover.prevent="handleDragOver(index)"
-        @drop="handleDrop(index)"
+        @drop="handleDrop"
         @dragend="handleDragEnd"
       >
         <div class="drag-handle">
@@ -144,24 +144,24 @@ function handleDragEnd() {
       <h3>Add Location</h3>
       <div class="search-box">
         <input
-          v-model="searchQuery"
+          v-model="searchValue"
           type="text"
           placeholder="Enter city name..."
           @input="handleSearch"
           @keyup.enter="handleAddFirst"
         />
-        <div v-if="searching" class="search-results loading">Searching...</div>
-        <div v-else-if="searchResults.length > 0" class="search-results">
+        <div v-if="searchingLoading" class="search-results loading">searchin...</div>
+        <div v-else-if="searchResultCityList.length > 0" class="search-results">
           <div
-            v-for="result in searchResults"
-            :key="result.id"
+            v-for="city in searchResultCityList"
+            :key="city.id"
             class="search-result-item"
-            @click="addCity(result)"
+            @click="addCity(city)"
           >
-            {{ result.name }}, {{ result.country }}
+            {{ city.name }}, {{ city.country }}
           </div>
         </div>
-        <div v-else-if="searchQuery && !searching" class="search-results empty">
+        <div v-else-if="searchValue && !searchingLoading" class="search-results empty">
           No results found
         </div>
       </div>
