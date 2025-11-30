@@ -1,1 +1,1 @@
-export { default as WeatherWidget } from './index.vue'
+export { default as WeatherWidget } from './List.vue'

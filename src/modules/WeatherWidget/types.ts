@@ -39,3 +39,9 @@ export declare namespace IEntity {
       
 }
 
+export interface StorageType {
+    cities: IEntity.City[]
+}
+  
+
+

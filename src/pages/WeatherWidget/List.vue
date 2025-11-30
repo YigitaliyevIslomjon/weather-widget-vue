@@ -6,9 +6,13 @@ import { WeatherCard, SettingsModal, LocationPermission } from './components'
 import { BaseIcon } from '@/components/UI'
 // services
 import { getWeatherByCity, getWeatherByCoords, getCurrentLocation } from '@/modules/WeatherWidget/services'
-import { saveConfig, loadConfig } from '@/services/storage.service'    
 // types
 import * as Types from '@/modules/WeatherWidget/types'
+// composables
+import { useStorage } from '@/modules/WeatherWidget/composibles/useCitiesStorage'
+
+// composables
+const { loadConfig, saveConfig } = useStorage()
 
 // reactives
 const showSettings = ref(false)
