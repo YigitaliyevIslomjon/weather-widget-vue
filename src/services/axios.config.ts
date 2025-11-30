@@ -33,8 +33,9 @@ axiosInstance.interceptors.request.use(
       config.params = {}
     }
 
-    config.params.appid = API_KEY
+    config.params.appid = API_KEY 
 
+    console.log('API_KEY', API_KEY)
     return config
   },
   (error: AxiosError) => {
