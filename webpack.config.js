@@ -121,8 +121,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
       filename: 'index.html',
-      inject: 'body',
-      scriptLoading: 'blocking',
+      inject: false, // Script tag template ichida
       minify: isProd ? {
         removeComments: true,
         collapseWhitespace: true,

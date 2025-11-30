@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 
 // Axios Base Configuration
-const baseURL = process.env.API_BASE_URL || 'https://api.openweathermap.org'
+const baseURL = process.env.API_BASE_URL 
 
 const API_KEY = process.env.API_KEY 
 
