@@ -120,13 +120,7 @@ module.exports = {
     
     new HtmlWebpackPlugin({
       template: './index.html',
-      filename: 'index.html',
-      inject: false, // Script tag template ichida
-      minify: isProd ? {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true
-      } : false
+      filename: 'index.html'
     }),
     
     // Note: Not using MiniCssExtractPlugin because custom elements use Shadow DOM
