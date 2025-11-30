@@ -1,13 +1,13 @@
 export declare namespace IApi {
     export namespace Weather {
       export interface Response {
-        data : {}
+        data: any
       }
     }
     
     export namespace CityList {  
       export interface Response {
-        data : []
+        data: any[]
       }
     }
   }

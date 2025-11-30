@@ -5,12 +5,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
-// ✅ .env faylni avval o'qish uchun
+// to read .env file
 require('dotenv').config()
 
 const isProd = process.env.NODE_ENV === 'production'
 
-// ✅ .env fayl o'qilgandan keyin o'qiladi
+// to read .env file
 const API_BASE_URL = process.env.API_BASE_URL
 const API_WEATHER_KEY = process.env.API_WEATHER_KEY 
 
@@ -119,18 +119,18 @@ module.exports = {
   
   plugins: [
     new VueLoaderPlugin(),
-    
-    // ✅ Dotenv plugin - .env faylni o'qiydi
-    // defaults: false - avtomatik DefinePlugin yaratmasligi uchun
+
+    // Dotenv plugin - to read .env file
+    // defaults: false - automatically create DefinePlugin
     new Dotenv({
       path: './.env',
       safe: false,
       systemvars: true,
       silent: false,
-      defaults: false // ✅ Avtomatik DefinePlugin yaratmasligi uchun
+      defaults: false
     }),
     
-    // ✅ DefinePlugin - barcha o'zgaruvchilar va Vue flags
+    // DefinePlugin - all variables and Vue flags
     new webpack.DefinePlugin({
       'process.env.API_BASE_URL': JSON.stringify(API_BASE_URL),
       'process.env.API_WEATHER_KEY': JSON.stringify(API_WEATHER_KEY),
@@ -144,8 +144,7 @@ module.exports = {
       filename: 'index.html'
     }),
     
-    // Note: Not using MiniCssExtractPlugin because custom elements use Shadow DOM
-    // Styles are injected inline via style-loader
+    
   ],
   
   optimization: {

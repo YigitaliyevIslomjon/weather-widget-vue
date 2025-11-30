@@ -1,29 +1,29 @@
 // utils
 import { get} from "radash"
 // types
-import { CityEntity, WeatherEntity } from "@/modules/WeatherWidget/types"
+import * as Types from "./types"
 
-export const weatherMapper = (data: any): WeatherEntity => ({
-  cityId: `${get(data, 'coord.lat', 0)}-${get(data, 'coord.lon', 0)}`,
-  cityName: get(data, 'name', ''),
-  country: get(data, 'sys.country', ''),
-  temp: get(data, 'main.temp', 0),
-  feelsLike: get(data, 'main.feels_like', 0),
-  description: get(data, 'weather[0].description', ''),
-  humidity: get(data, 'main.humidity', 0),
-  pressure: get(data, 'main.pressure', 0),
-  windSpeed: get(data, 'wind.speed', 0),
-  windDeg: get(data, 'wind.deg', 0),
-  dewPoint: get(data, 'main.temp', 0) - ((100 - get(data, 'main.humidity', 0)) / 5),
-  visibility: get(data, 'visibility', 0) / 1000,
-  icon: get(data, 'weather[0].icon', '')
+export const weatherMapper = (item?: any): Types.IEntity.Weather => ({
+  cityId: `${get(item, 'coord.lat', 0)}-${get(item, 'coord.lon', 0)}`,
+  cityName: get(item, 'name', ''),
+  country: get(item, 'sys.country', ''),
+  temp: get(item, 'main.temp', 0),
+  feelsLike: get(item, 'main.feels_like', 0),
+  description: get(item, 'weather[0].description', ''),
+  humidity: get(item, 'main.humidity', 0),
+  pressure: get(item, 'main.pressure', 0),
+  windSpeed: get(item, 'wind.speed', 0),
+  windDeg: get(item, 'wind.deg', 0),
+  dewPoint: get(item, 'main.temp', 0) - ((100 - get(item, 'main.humidity', 0)) / 5),
+  visibility: get(item, 'visibility', 0) / 1000,
+  icon: get(item, 'weather[0].icon', '')
 })
     
   
-export const cityMapper = (data: any): CityEntity => ({
-  id: `${get(data, 'lat', 0)}-${get(data, 'lon', 0)}`,  
-  name: get(data, 'name', ''),
-  country: get(data, 'country', ''),
-  lat: get(data, 'lat', 0),
-  lon: get(data, 'lon', 0)
+export const cityMapper = (item: Types.IEntity.City): Types.IEntity.City => ({
+  id: `${get(item, 'lat', 0)}-${get(item, 'lon', 0)}`,  
+  name: get(item, 'name', ''),
+  country: get(item, 'country', ''),
+  lat: get(item, 'lat', 0),
+  lon: get(item, 'lon', 0)
 })

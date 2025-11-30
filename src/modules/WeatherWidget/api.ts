@@ -1,4 +1,5 @@
 import axiosConfig from "@/services/axios.config"
+// types
 import * as Types from "./types"
 
 const URL = {
@@ -6,7 +7,7 @@ const URL = {
   cityList: '/geo/1.0/direct',
 } as const
 
-// Raw API responses
+
 export const getWeatherByCoords = (lat: number, lon: number): Promise<Types.IApi.Weather.Response> => 
   axiosConfig.get(URL.weather, { lat, lon, units: 'metric' })
 

@@ -8,7 +8,7 @@ export async function getWeatherByCoords(
   lon: number
 ): Promise<Types.IEntity.Weather> {
   const response = await getWeatherByCoordsAPI(lat, lon)
-  return weatherMapper(response.data)
+  return weatherMapper(response?.data)
 }
 
 export async function getWeatherByCity(
@@ -21,63 +21,31 @@ export async function searchCity(
   query: string
 ): Promise<Types.IEntity.City[]> {
   const response = await getCityList(query)
-  return response.data.map(cityMapper)
+  return response?.data?.map((item: any) => cityMapper(item))
 }
 
 export async function getCurrentLocation(): Promise<{ lat: number; lon: number }> {
   return new Promise((resolve, reject) => {
-    // Browser support check
     if (!navigator.geolocation) {
-      reject(new Error('Geolocation is not supported by your browser'))
-      return
+      return reject(new Error('Browser does not support geolocation'))
     }
-    
-    // With timeout getCurrentPosition
-    const timeoutId = setTimeout(() => {
-      reject(new Error('Location request timed out. Please try again or add city manually.'))
-    }, 10000) // 10 sekund timeout
-    
+
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        clearTimeout(timeoutId)
-      
+      (pos) => {
         resolve({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude
         })
       },
-      (error) => {
-        clearTimeout(timeoutId)
-        // Error type by message
-        let message = 'Failed to get location. '
-        
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            message += 'Location permission denied. Please enable location access in your browser settings.'
-            console.error('🚫 Permission denied')
-            break
-          case error.POSITION_UNAVAILABLE:
-            message += 'Location information unavailable. Please check your device settings.'
-            console.error('📍 Position unavailable')
-            break
-          case error.TIMEOUT:
-            message += 'Location request timed out. Please try again.'
-            console.error('⏱️ Timeout')
-            break
-          default:
-            message += 'An unknown error occurred.'
-            console.error('❓ Unknown error')
-        }
-        
-        reject(new Error(message))
+      () => {
+        reject(new Error('Failed to get location. User denied or unavailable.'))
       },
       {
-        enableHighAccuracy: false, // Faster result
-        timeout: 8000,             // 8 seconds
-        maximumAge: 300000         // 5 minutes cache
-      } 
+        timeout: 8000
+      }
     )
   })
 }
+
 
 
