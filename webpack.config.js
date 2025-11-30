@@ -2,10 +2,8 @@ const path = require('path')
 const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
-// to read .env file
 require('dotenv').config()
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -121,7 +119,6 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // Dotenv plugin - to read .env file
-    // defaults: false - automatically create DefinePlugin
     new Dotenv({
       path: './.env',
       safe: false,
@@ -143,8 +140,6 @@ module.exports = {
       template: './index.html',
       filename: 'index.html'
     }),
-    
-    
   ],
   
   optimization: {
