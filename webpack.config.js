@@ -4,12 +4,15 @@ const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
+// ✅ .env faylni avval o'qish uchun
+require('dotenv').config()
 
 const isProd = process.env.NODE_ENV === 'production'
 
-// Environment variables
-const API_BASE_URL = process.env.API_BASE_URL 
-const API_KEY = process.env.API_KEY 
+// ✅ .env fayl o'qilgandan keyin o'qiladi
+const API_BASE_URL = process.env.API_BASE_URL
+const API_WEATHER_KEY = process.env.API_WEATHER_KEY 
 
 module.exports = {
   mode: isProd ? 'production' : 'development',
@@ -57,6 +60,15 @@ module.exports = {
         }
       },
       
+       // Images - WebP, PNG, JPG, SVG
+       {
+        test: /\.(png|jpe?g|gif|svg|webp)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name].[hash:8][ext]'
+        }
+      },
+
       // SCSS files
       {
         test: /\.scss$/,
@@ -108,11 +120,20 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     
+    // ✅ Dotenv plugin - .env faylni o'qiydi
+    // defaults: false - avtomatik DefinePlugin yaratmasligi uchun
+    new Dotenv({
+      path: './.env',
+      safe: false,
+      systemvars: true,
+      silent: false,
+      defaults: false // ✅ Avtomatik DefinePlugin yaratmasligi uchun
+    }),
+    
+    // ✅ DefinePlugin - barcha o'zgaruvchilar va Vue flags
     new webpack.DefinePlugin({
-      'process.env': {
-        API_BASE_URL: JSON.stringify(API_BASE_URL),
-        API_KEY: JSON.stringify(API_KEY)
-      },
+      'process.env.API_BASE_URL': JSON.stringify(API_BASE_URL),
+      'process.env.API_WEATHER_KEY': JSON.stringify(API_WEATHER_KEY),
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false

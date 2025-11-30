@@ -3,6 +3,9 @@
 import * as Types from '@/modules/WeatherWidget/types'
 // components
 import { BaseIcon } from '@/components/UI'
+// assets
+import WeatherIcon from '@/assets/weatherIcon.webp'  
+
 // props
 defineProps<{
   weather: Types.IEntity.Weather
@@ -24,6 +27,7 @@ function getWindDirection(deg: number): string {
   const index = Math.round(deg / 45) % 8
   return directions[index]
 }
+
 </script>
 
 <template>
@@ -44,7 +48,7 @@ function getWindDirection(deg: number): string {
     <!-- Temperature -->
     <div class="temp-section">
       <img 
-        :src="`https://openweathermap.org/img/wn/${weather.icon}@2x.png`"
+        :src="WeatherIcon"
         :alt="weather.description"
         class="weather-icon"
       />

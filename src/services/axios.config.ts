@@ -1,9 +1,9 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 
-// Axios Base Configuration
-const baseURL = process.env.API_BASE_URL 
 
-const API_KEY = process.env.API_KEY 
+// Axios Base Configuration
+const baseURL = process.env.API_BASE_URL
+const API_WEATHER_KEY = process.env.API_WEATHER_KEY 
 
 const axiosParams = { 
   baseURL
@@ -33,9 +33,8 @@ axiosInstance.interceptors.request.use(
       config.params = {}
     }
 
-    config.params.appid = API_KEY 
-
-    console.log('API_KEY', API_KEY)
+    // API key .env fayldan o'qiladi
+    config.params.appid = API_WEATHER_KEY
     return config
   },
   (error: AxiosError) => {
