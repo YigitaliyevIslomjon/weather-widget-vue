@@ -26,11 +26,6 @@ const searchResultCityList = ref<Types.IEntity.City[]>([])
 const searchingLoading = ref(false)
 const dragIndex = ref<number | null>(null)
 
-// Watch props
-watch(() => props.cities, (newCities) => {
-  cityList.value = [...newCities]
-}, { deep: true })
-
 
 // methods
 const handleSearch = useDebounceFn(async () => {
@@ -106,6 +101,13 @@ function handleDrop() {
 function handleDragEnd() {
   dragIndex.value = null
 }
+
+// Watch props
+watch(() => props.cities, (newCities) => {
+  cityList.value = [...newCities]
+}, { deep: true })
+
+
 </script>
 
 <template>

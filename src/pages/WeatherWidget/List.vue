@@ -23,22 +23,26 @@ const error = ref('')
 const showLocationPrompt = ref(false)
 const locationBlocked = ref(false)
 
-// Load config from localStorage
-onMounted(async () => {
-  const config = loadConfig()
-  
-  if (config) {
-    cities.value = config.cities || []
-  }
-  
-  // If no cities configured, ask user for location permission
+
+async function loadWeather() {
   if (cities.value.length === 0) {
-    showLocationPrompt.value = true
-  } else {
-    // Load weather for existing cities
-    await loadWeather()
+    weatherList.value = []
+    return
   }
-})
+  
+  loading.value = true
+  error.value = ''
+  
+  try {
+    const promises = cities.value.map((city: Types.IEntity.City) => getWeatherByCity(city))
+    weatherList.value = await Promise.all(promises)
+  } catch (err) {
+    error.value = 'Failed to load weather data. Check your API key.'
+    weatherList.value = []
+  } finally {
+    loading.value = false
+  }
+}
 
 // Request user location
 async function requestLocation() {
@@ -90,35 +94,32 @@ function declineLocation() {
   showLocationPrompt.value = false
 }
 
+function handleUpdateCities(newCities: Types.IEntity.City[]) {
+  cities.value = newCities
+  saveConfig(cities.value)
+}
+
 // Watch cities and reload weather
 watch(cities, async () => {
   await loadWeather()
 }, { deep: true })
 
-async function loadWeather() {
+// Load config from localStorage
+onMounted(async () => {
+  const config = loadConfig()
+  
+  if (config) {
+    cities.value = config.cities || []
+  }
+  
+  // If no cities configured, ask user for location permission
   if (cities.value.length === 0) {
-    weatherList.value = []
-    return
+    showLocationPrompt.value = true
+  } else {
+    // Load weather for existing cities
+    await loadWeather()
   }
-  
-  loading.value = true
-  error.value = ''
-  
-  try {
-    const promises = cities.value.map((city: Types.IEntity.City) => getWeatherByCity(city))
-    weatherList.value = await Promise.all(promises)
-  } catch (err) {
-    error.value = 'Failed to load weather data. Check your API key.'
-    weatherList.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
-function handleUpdateCities(newCities: Types.IEntity.City[]) {
-  cities.value = newCities
-  saveConfig(cities.value)
-}
+})
 
 </script>
 
@@ -139,7 +140,7 @@ function handleUpdateCities(newCities: Types.IEntity.City[]) {
         <button class="add-city-btn" @click="showSettings = true">
          <BaseIcon name="setting" />
           Open Settings
-        </button>
+        </button> 
       </div>
       <WeatherCard 
         v-for="(weather, index) in weatherList"
@@ -149,7 +150,7 @@ function handleUpdateCities(newCities: Types.IEntity.City[]) {
         @open-settings="showSettings = true"
       />
     </div>
-
+    
     <!-- Location Permission Prompt -->
     <LocationPermission
       v-if="showLocationPrompt"
